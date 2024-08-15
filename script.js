@@ -1,7 +1,7 @@
 
 // const registerBtn=document.getElementById("registerBtn")
 // registerBtn.addEventListener("click",register)
-
+let QuizPlayers = [];
 function login(){
     let userName=document.getElementById('username').value
     let password=document.getElementById('finalpassword').value
@@ -104,15 +104,55 @@ function addQuestion() {
     }
    
 }
+var userNameFinal;
+function AddQuizPlayerName() {
+    let userName1 = document.getElementById('username').value;
+    console.log(userName1)
+    userNameFinal=userName1;
+    let userObject = {
+        userName: userName1,
+        score: null
+    };
+    QuizPlayers.push(userObject)
+    localStorage.setItem('QuizPlayers', JSON.stringify(QuizPlayers));
+    window.location.href = 'quiz.html';
+}
+// function quizLogin() {
+//     console.log("quizLogin function called");
+
+//     let storedUser = localStorage.getItem('QuizPlayers');
+//         // User is not logged in, display the login prompt
+//     const link1 = document.createElement('a');
+//     link1.href = 'quizLogin.html';
+//     link1.textContent = 'Please Login Before Playing The Quiz';
+//     link1.style.color = "red";
+//     document.getElementById('link1').innerHTML = '';
+//     document.getElementById('link1').appendChild(link1);
+    
+// }
+
+function quizLogin() {
+    console.log("quizLogin function called");
+
+    // let storedUser = localStorage.setItem('QuizPlayers');
+        // User is not logged in, navigate to the login page
+    window.location.href = 'quizLogin.html';
+    let userName1 = document.getElementById('username').value;
+}
+
 function generateLink() {
     const link = document.createElement('a');
     link.href = 'quiz.html';
     link.textContent = 'Click here to take the quiz!!';
-    link.style.color="red"
+    link.style.color = "red";
     document.getElementById('link').innerHTML = '';
     document.getElementById('link').appendChild(link);
+
+    link.addEventListener("click", function(event) {
+        event.preventDefault(); // Prevent the default link behavior
+        quizLogin(); // Call quizLogin when the link is clicked
+    });
 }
-// Function to load questions from localStorage and display them
 function loadQuestions() {
     const questions = JSON.parse(localStorage.getItem('quizQuestions')) || [];
     const quizContainer = document.getElementById('quiz');
@@ -134,16 +174,28 @@ function loadQuestions() {
 // Function to submit the quiz and display the result
 function submitQuiz() {
     const questions = JSON.parse(localStorage.getItem('quizQuestions')) || [];
-    let score = 0;
+    let score1 = 0;
     questions.forEach((q, index) => {
         const selectedOption = document.querySelector(`input[name="q${index}"]:checked`);
         if (selectedOption && parseInt(selectedOption.value, 10) === q.correct) {
-            score++;
+            score1++;
         }
     });
-    document.getElementById('result').textContent = `Your score: ${score} / ${questions.length}`;
-}
+    document.getElementById('result').textContent = `Your score: ${score1} / ${questions.length}`;
+    const userDataString = localStorage.getItem('QuizPlayers');
+    const userData = JSON.parse(userDataString);
+    userData[0].score=score1;
+    localStorage.setItem('QuizPlayers', JSON.stringify(userData));
+    // console.log(userNameFinal);
+    // for(let i=0;i<userData.length;i++)
+    // {
+    //     if(userData[i].userName==userNameFinal)
+    //     {
+            
 
-// Load questions when the page loads
+    //     }
+    // }
+    
+}
 window.onload = loadQuestions;
 
